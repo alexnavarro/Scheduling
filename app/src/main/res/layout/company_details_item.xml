@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="16dp">
+
+    <TextView
+        android:id="@+id/txt_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:textSize="14sp"
+        android:layout_alignParentStart="true"
+        tools:text="Paula" />
+
+    <TextView
+        android:id="@+id/txt_scheduling"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:textSize="14sp"
+        android:layout_alignParentRight="true"
+        tools:text="8am | 11 am | 2pm | 6 pm" />
+
+    <TextView
+        android:id="@+id/txt_today"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="6dp"
+        android:textSize="14sp"
+        android:layout_toLeftOf="@+id/txt_scheduling"
+        android:layout_toStartOf="@+id/txt_scheduling"
+        android:textStyle="bold"
+        tools:text="Today" />
+
+</RelativeLayout>

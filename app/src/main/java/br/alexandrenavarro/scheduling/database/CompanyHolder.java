@@ -2,6 +2,10 @@ package br.alexandrenavarro.scheduling.database;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
+
+import br.alexandrenavarro.scheduling.R;
+import br.alexandrenavarro.scheduling.model.Company;
 
 /**
  * Created by alexandrenavarro on 14/08/17.
@@ -9,7 +13,20 @@ import android.view.View;
 
 public class CompanyHolder extends RecyclerView.ViewHolder{
 
+    private final TextView mNameField;
+    private final TextView mAddressField;
+    private final TextView mPhoneField;
+
     public CompanyHolder(View itemView) {
         super(itemView);
+        mNameField = itemView.findViewById(R.id.txt_name);
+        mAddressField = itemView.findViewById(R.id.txt_address);
+        mPhoneField = itemView.findViewById(R.id.txt_txt_phone);
+    }
+
+    public void bind(Company company) {
+        mNameField.setText(company.getName());
+        mAddressField.setText(company.getAddress());
+        mPhoneField.setText(company.getPhone());
     }
 }
