@@ -20,5 +20,7 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".CompanyActivity"/>
+
     </application>
 </manifest>

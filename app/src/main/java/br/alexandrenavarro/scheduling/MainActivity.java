@@ -56,12 +56,8 @@ public class MainActivity extends AppCompatActivity implements LifecycleRegistry
 
     protected FirebaseRecyclerAdapter<Company, CompanyHolder> getAdapter() {
         Query lastFifty = mCompaniesRef.limitToLast(50);
-        return new FirebaseRecyclerAdapter<Company, CompanyHolder>(
-                Company.class,
-                R.layout.company_list_item,
-                CompanyHolder.class,
-                lastFifty,
-                this) {
+        return new FirebaseRecyclerAdapter<Company, CompanyHolder>(Company.class,
+                R.layout.company_list_item, CompanyHolder.class, lastFifty, this) {
             @Override
             public void populateViewHolder(CompanyHolder holder, Company chat, int position) {
                 holder.bind(chat);

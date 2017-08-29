@@ -3,4 +3,7 @@
     <string name="phone">Phone:</string>
     <string name="address">Address:</string>
     <string name="professionals">Professionals</string>
+    <string name="available_time_label">Available time on:</string>
+    <string name="today">Today</string>
+    <string name="available">Available</string>
 </resources>
