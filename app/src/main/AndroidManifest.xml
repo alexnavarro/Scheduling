@@ -22,5 +22,7 @@
 
         <activity android:name=".CompanyActivity"/>
 
+        <activity android:name=".SchedulingActivity"/>
+
     </application>
 </manifest>

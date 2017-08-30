@@ -16,6 +16,8 @@ import com.google.firebase.database.Query;
 
 import br.alexandrenavarro.scheduling.database.CompanyHolder;
 import br.alexandrenavarro.scheduling.model.Company;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by alexandrenavarro on 09/08/17.
@@ -27,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements LifecycleRegistry
     private final LifecycleRegistry mRegistry = new LifecycleRegistry(this);
 
     private FirebaseRecyclerAdapter<Company, CompanyHolder> mAdapter;
-    private RecyclerView mCompanies;
+    @BindView(R.id.recycler_view) RecyclerView mCompanies;
     protected DatabaseReference mCompaniesRef;
     private LinearLayoutManager mManager;
     private DividerItemDecoration mDividerItemDecoration;
@@ -36,9 +38,9 @@ public class MainActivity extends AppCompatActivity implements LifecycleRegistry
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
+        ButterKnife.bind(this);
 
         mCompaniesRef = FirebaseDatabase.getInstance().getReference().child("companies");
-        mCompanies = findViewById(R.id.recycler_view);
         mManager = new LinearLayoutManager(this);
         mCompanies.setLayoutManager(mManager);
         mDividerItemDecoration = new DividerItemDecoration(

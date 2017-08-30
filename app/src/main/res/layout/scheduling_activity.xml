@@ -4,6 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="16dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -26,10 +29,14 @@
             android:text="@string/available_time_label" />
 
         <EditText
+            android:id="@+id/et_date_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginStart="8dp"
+            android:clickable="true"
+            android:focusable="false"
+            android:inputType="none"
             tools:text="24/08/2017" />
 
     </LinearLayout>
