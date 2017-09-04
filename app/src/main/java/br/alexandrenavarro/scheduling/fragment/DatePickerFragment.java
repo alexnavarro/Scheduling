@@ -12,19 +12,20 @@ import android.widget.DatePicker;
 import java.util.Calendar;
 
 import br.alexandrenavarro.scheduling.OnDateChange;
+import br.alexandrenavarro.scheduling.util.DateUtil;
 
 /**
  * Created by alexandrenavarro on 29/08/17.
  */
 
-public class DatePickerFragment extends DialogFragment implements OnDateSetListener{
+public class DatePickerFragment extends DialogFragment implements OnDateSetListener {
 
     private OnDateChange mCallback;
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        final Calendar c = Calendar.getInstance();
+        final Calendar c = DateUtil.getNextBusinessDay();
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);

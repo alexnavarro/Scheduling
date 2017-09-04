@@ -1,4 +1,4 @@
-package br.alexandrenavarro.scheduling.database;
+package br.alexandrenavarro.scheduling.holder;
 
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -18,12 +18,14 @@ public class ProfessionalHolder extends RecyclerView.ViewHolder{
 
     private final TextView mNameField;
     private final TextView mSchedulingField;
+    private final TextView mDayOfWeekField;
     private Professional mProfessional;
 
     public ProfessionalHolder(View itemView) {
         super(itemView);
         mNameField = itemView.findViewById(R.id.txt_name);
         mSchedulingField = itemView.findViewById(R.id.txt_scheduling);
+        mDayOfWeekField = itemView.findViewById(R.id.txt_today);
 
         itemView.setOnClickListener(view -> {
             Intent intent = new Intent(view.getContext(), SchedulingActivity.class);
@@ -32,11 +34,13 @@ public class ProfessionalHolder extends RecyclerView.ViewHolder{
         });
     }
 
-    public void bind(Professional professional, String scheduling) {
+    public void bind(Professional professional, String scheduling, String weekDay) {
         mNameField.setText(professional.getName());
 
         if(!TextUtils.isEmpty(scheduling))
             mSchedulingField.setText(scheduling);
+
+        mDayOfWeekField.setText(weekDay);
 
         mProfessional = professional;
     }

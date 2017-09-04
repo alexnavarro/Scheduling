@@ -4,11 +4,13 @@ import android.arch.lifecycle.LifecycleRegistry;
 import android.arch.lifecycle.LifecycleRegistryOwner;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -25,10 +27,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import br.alexandrenavarro.scheduling.database.ProfessionalHolder;
+import br.alexandrenavarro.scheduling.holder.ProfessionalHolder;
 import br.alexandrenavarro.scheduling.model.Company;
 import br.alexandrenavarro.scheduling.model.Professional;
 import br.alexandrenavarro.scheduling.model.Scheduling;
+import br.alexandrenavarro.scheduling.util.DateUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -86,11 +89,28 @@ public class CompanyActivity extends AppCompatActivity implements LifecycleRegis
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+
+        return false;
+    }
+
     private void bind() {
         if(mCompany != null){
             mPhone.setText(mCompany.getPhone());
             mAddress.setText(mCompany.getAddress());
             setTitle(mCompany.getName());
+        }
+
+        ActionBar supportActionBar = getSupportActionBar();
+        if(supportActionBar != null){
+            supportActionBar.setDisplayHomeAsUpEnabled(true);
+            supportActionBar.setDisplayShowHomeEnabled(true);
         }
     }
 
@@ -114,12 +134,13 @@ public class CompanyActivity extends AppCompatActivity implements LifecycleRegis
     }
 
     protected FirebaseRecyclerAdapter<Professional, ProfessionalHolder> getAdapter() {
+        String dayOfWeek = new SimpleDateFormat("EEEE").format(DateUtil.getNextBusinessDay().getTime());
 
         return new FirebaseRecyclerAdapter<Professional, ProfessionalHolder>(Professional.class,
                 R.layout.company_details_item, ProfessionalHolder.class, mProfessionalRef,this) {
             @Override
             public void populateViewHolder(ProfessionalHolder holder, Professional professional, int position) {
-                holder.bind(professional, map.get(professional.getId()));
+                holder.bind(professional, map.get(professional.getId()), dayOfWeek);
             }
 
             @Override
@@ -130,11 +151,11 @@ public class CompanyActivity extends AppCompatActivity implements LifecycleRegis
         };
     }
 
-
     private void loadScheduling(){
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         SimpleDateFormat dateFormatRequest = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-        Date date = Calendar.getInstance().getTime();
+        Date date = DateUtil.getNextBusinessDay().getTime();
+
         String dateFormatted = dateFormat.format(date);
         mSchedulingRef.orderByChild("idCompany_day").equalTo(mCompany.getId()+ "_" +dateFormatted).
                 addValueEventListener(new ValueEventListener() {
@@ -151,7 +172,7 @@ public class CompanyActivity extends AppCompatActivity implements LifecycleRegis
                             }
 
                             if(date != null){
-                                Calendar calendar = Calendar.getInstance();
+                                Calendar calendar = DateUtil.getNextBusinessDay();
                                 calendar.setTime(date);
                                 String formattedDate = "";
 

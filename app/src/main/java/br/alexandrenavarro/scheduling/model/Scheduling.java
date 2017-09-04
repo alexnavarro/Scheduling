@@ -12,6 +12,7 @@ public class Scheduling {
     private String idCompany_day;
     private String name;
     private long idProfessional;
+    private String idUserDay;
 
     public String getDate() {
         return date;
@@ -59,5 +60,13 @@ public class Scheduling {
 
     public void setIdProfessional(long idProfessional) {
         this.idProfessional = idProfessional;
+    }
+
+    public void setIdUserDay(String idUserDay) {
+        this.idUserDay = idUserDay;
+    }
+
+    public String getIdUserDay() {
+        return idUserDay;
     }
 }

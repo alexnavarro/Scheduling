@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
+    android:orientation="horizontal"
     android:paddingBottom="16dp"
     android:paddingTop="16dp">
 
@@ -13,10 +14,9 @@
         android:id="@+id/txt_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_gravity="left"
+        android:layout_marginEnd="40dp"
+        android:layout_marginRight="40dp"
         android:maxLines="1"
         android:textSize="14sp"
         tools:text="Paula" />
@@ -25,29 +25,25 @@
         android:id="@+id/txt_today"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginEnd="6dp"
         android:layout_marginRight="6dp"
-        android:layout_toEndOf="@+id/txt_name"
-        android:layout_toRightOf="@+id/txt_name"
         android:maxLines="1"
-        android:text="@string/today"
         android:textSize="14sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        tools:text="@string/today" />
 
     <TextView
         android:id="@+id/txt_scheduling"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_toEndOf="@+id/txt_today"
-        android:layout_toRightOf="@+id/txt_today"
+        android:layout_gravity="center"
         android:ellipsize="marquee"
         android:singleLine="true"
         android:text="@string/available"
         android:textSize="12sp"
         android:textStyle="bold"
-        tools:text="8am | 11 am | 2pm | 6 pm fdfdfd jfdjhfjdhfjdhfjdjfdhjfhdjhfjd fdfdfdfdfdfdf" />
+        tools:text="8am | 11 am | 2pm | 6 pm " />
 
 
-</RelativeLayout>
+</LinearLayout>

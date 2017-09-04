@@ -6,4 +6,6 @@
     <string name="available_time_label">Available time on:</string>
     <string name="today">Today</string>
     <string name="available">Available</string>
+    <string name="busy">busy</string>
+    <string name="chosen_time">%s was successfully chosen</string>
 </resources>

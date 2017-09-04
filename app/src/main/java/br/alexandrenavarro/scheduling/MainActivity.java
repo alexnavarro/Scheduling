@@ -14,7 +14,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
-import br.alexandrenavarro.scheduling.database.CompanyHolder;
+import br.alexandrenavarro.scheduling.holder.CompanyHolder;
 import br.alexandrenavarro.scheduling.model.Company;
 import butterknife.BindView;
 import butterknife.ButterKnife;
