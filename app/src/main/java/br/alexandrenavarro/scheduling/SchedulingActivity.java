@@ -128,6 +128,10 @@ public class SchedulingActivity extends AppCompatActivity implements OnDateChang
                 addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (Hour hour : availableHours){
+                            hour.setAvailable(true);
+                        }
+
                         for (DataSnapshot schedulingSnapshot : dataSnapshot.getChildren()) {
                             Scheduling scheduling = schedulingSnapshot.getValue(Scheduling.class);
 
@@ -186,17 +190,22 @@ public class SchedulingActivity extends AppCompatActivity implements OnDateChang
         dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         final String dateFormatted = dateFormat.format(calendar.getTime());
 
+        //Log.e(TAG, "onCancelled", databaseError.toException());
+
         mDatabase.child("professionalSchedule").orderByChild("idUserDay").equalTo("10" + "_" + dateFormatted)
-                .removeEventListener(new ValueEventListener() {
+                .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot appleSnapshot: dataSnapshot.getChildren()) {
+                            appleSnapshot.getRef().removeValue();
+                        }
+
                         Scheduling scheduling = new Scheduling();
                         scheduling.setDate(dateWithHour);
                         scheduling.setIdCompany(mProfessional.getIdCompany());
                         scheduling.setIdProfessional(mProfessional.getId());
                         scheduling.setName("Alexandre");
                         scheduling.setUid(10);
-
 
                         scheduling.setIdCompany_day(mProfessional.getIdCompany() + "_" + dateFormatted);//"10_04-09-2017"
                         scheduling.setIdUserDay("10" + "_" + dateFormatted);
@@ -207,7 +216,7 @@ public class SchedulingActivity extends AppCompatActivity implements OnDateChang
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        Scheduling scheduling = new Scheduling();
+                        Log.e(SchedulingActivity.class.getSimpleName(), "onCancelled", databaseError.toException());
 
                     }
                 });

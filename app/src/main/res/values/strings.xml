@@ -8,4 +8,8 @@
     <string name="available">Available</string>
     <string name="busy">busy</string>
     <string name="chosen_time">%s was successfully chosen</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="user_greeting">Hello there, do the sign in and schedule a professional easily!</string>
+    <string name="user_logged">Hello %s!</string>
+    <string name="loading">Loading…</string>
 </resources>
