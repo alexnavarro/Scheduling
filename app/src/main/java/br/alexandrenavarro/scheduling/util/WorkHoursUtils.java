@@ -1,6 +1,9 @@
 package br.alexandrenavarro.scheduling.util;
 
+import android.text.format.DateUtils;
+
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import br.alexandrenavarro.scheduling.model.Hour;
@@ -11,17 +14,21 @@ import br.alexandrenavarro.scheduling.model.Hour;
 
 public class WorkHoursUtils {
 
-    public static List<Hour> generate(){
+    private static final int hours[] = new int[]{9, 10, 11, 13, 14, 15, 16, 17};
+
+    public static List<Hour> generate(Calendar calendar){
         List<Hour> list = new ArrayList<>();
 
-        list.add(new Hour(9, true));
-        list.add(new Hour(10, true));
-        list.add(new Hour(11, true));
-        list.add(new Hour(13, true));
-        list.add(new Hour(14, true));
-        list.add(new Hour(15, true));
-        list.add(new Hour(16, true));
-        list.add(new Hour(17, true));
+        boolean today = DateUtils.isToday(calendar.getTimeInMillis());
+        int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
+
+        for(int hour : hours){
+            if(today && currentHour > hour){
+                list.add(new Hour(hour, false));
+            } else {
+                list.add(new Hour(hour, true));
+            }
+        }
 
         return list;
     }

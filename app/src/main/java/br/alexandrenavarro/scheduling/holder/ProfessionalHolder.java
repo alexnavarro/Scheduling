@@ -2,12 +2,13 @@ package br.alexandrenavarro.scheduling.holder;
 
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.Set;
+
 import br.alexandrenavarro.scheduling.R;
-import br.alexandrenavarro.scheduling.SchedulingActivity;
+import br.alexandrenavarro.scheduling.activity.SchedulingActivity;
 import br.alexandrenavarro.scheduling.model.Professional;
 
 /**
@@ -34,14 +35,27 @@ public class ProfessionalHolder extends RecyclerView.ViewHolder{
         });
     }
 
-    public void bind(Professional professional, String scheduling, String weekDay) {
+    public void bind(Professional professional, Set<Integer> hours, String weekDay) {
         mNameField.setText(professional.getName());
 
-        if(!TextUtils.isEmpty(scheduling))
-            mSchedulingField.setText(scheduling);
+        if(hours != null)
+            mSchedulingField.setText(formatHour(hours));
 
         mDayOfWeekField.setText(weekDay);
 
         mProfessional = professional;
+    }
+
+    private String formatHour(Set<Integer> hours){
+        StringBuilder builder = new StringBuilder();
+        for(Integer hour : hours){
+            if(builder.length() > 0){
+                builder.append(" ").append("|").append(" ");
+            }
+
+            builder.append(hour).append(":").append("00");
+        }
+
+        return builder.toString();
     }
 }

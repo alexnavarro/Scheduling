@@ -19,9 +19,9 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:text="@string/user_greeting"
             android:layout_toLeftOf="@+id/sign_in_button"
-            android:layout_toStartOf="@+id/sign_in_button" />
+            android:layout_toStartOf="@+id/sign_in_button"
+            android:text="@string/user_greeting" />
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/sign_in_button"
@@ -37,20 +37,32 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_toEndOf="@id/txt_greeting"
-            tools:visibility="visible"
             android:layout_toRightOf="@id/txt_greeting"
-            android:theme="@style/ThemeOverlay.MyDarkButton"
             android:text="@string/sign_out"
-            android:visibility="gone" />
+            android:theme="@style/ThemeOverlay.MyDarkButton"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
     </RelativeLayout>
 
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="16dp"
-        tools:listitem="@layout/company_list_item" />
+        android:layout_marginTop="16dp">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/company_list_item" />
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="wrap_content" />
+
+    </FrameLayout>
+
 
 </LinearLayout>

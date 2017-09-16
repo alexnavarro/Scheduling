@@ -1,5 +1,6 @@
-package br.alexandrenavarro.scheduling;
+package br.alexandrenavarro.scheduling.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -13,6 +14,8 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,6 +28,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import br.alexandrenavarro.scheduling.OnDateChange;
+import br.alexandrenavarro.scheduling.R;
 import br.alexandrenavarro.scheduling.adapter.SchedulingAdapter;
 import br.alexandrenavarro.scheduling.fragment.DatePickerFragment;
 import br.alexandrenavarro.scheduling.holder.OnItemClickListener;
@@ -37,6 +42,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static br.alexandrenavarro.scheduling.activity.MainActivity.RC_SIGN_IN;
+import static br.alexandrenavarro.scheduling.util.FormatIdUtil.geIdWithFormattedDateWithoutHours;
+
 /**
  * Created by alexandrenavarro on 29/08/17.
  */
@@ -45,23 +53,22 @@ public class SchedulingActivity extends AppCompatActivity implements OnDateChang
 
     public static final String EXTRA_PROFESSIONAL = "Professional";
 
-    @BindView(R.id.txt_description)
-    TextView mTextDescription;
-    @BindView(R.id.et_date_time)
-    EditText mEtDateTime;
+    @BindView(R.id.txt_description) TextView mTextDescription;
+    @BindView(R.id.et_date_time) EditText mEtDateTime;
     @BindView(R.id.recycler_view_available_time)
     RecyclerView mRecyclerView;
 
     private LinearLayoutManager mManager;
 
     private Professional mProfessional;
-    private List<Hour> availableHours = WorkHoursUtils.generate();
+    private List<Hour> availableHours = WorkHoursUtils.generate(Calendar.getInstance());
     private SchedulingAdapter mAdapter;
     private int year;
     private int month;
     private int day;
 
     private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,6 +83,8 @@ public class SchedulingActivity extends AppCompatActivity implements OnDateChang
         }
 
         bind();
+
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -87,6 +96,14 @@ public class SchedulingActivity extends AppCompatActivity implements OnDateChang
         }
 
         return false;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SIGN_IN && resultCode == RESULT_OK) {
+            mAuth.getCurrentUser().reload();
+        }
     }
 
     @OnClick(R.id.et_date_time)
@@ -123,8 +140,11 @@ public class SchedulingActivity extends AppCompatActivity implements OnDateChang
     }
 
     private void loadScheduling() {
+        Calendar calendar = DateUtil.getNextBusinessDay();
         SimpleDateFormat dateFormatRequest = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-        mDatabase.child("professionalSchedule").orderByChild("idProfessional").equalTo(mProfessional.getId()).
+        mDatabase.child("professionalSchedule").orderByChild("idProfessionalDay").
+                equalTo(geIdWithFormattedDateWithoutHours(calendar,
+                        String.valueOf(mProfessional.getId()))).
                 addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -145,6 +165,11 @@ public class SchedulingActivity extends AppCompatActivity implements OnDateChang
                             Calendar instance = Calendar.getInstance();
                             instance.setTime(date);
 
+                            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+
+                            if(!format.format(calendar.getTime()).equals(format.format(instance.getTime()))){
+                                continue;
+                            }
 
                             Hour hour = new Hour(instance.get(Calendar.HOUR_OF_DAY), true);
                             if (availableHours.contains(hour)) {
@@ -169,12 +194,27 @@ public class SchedulingActivity extends AppCompatActivity implements OnDateChang
         this.year = year;
         this.month = month;
         this.day = day;
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, day);
+        calendar.set(Calendar.YEAR, year);
+
+        availableHours = WorkHoursUtils.generate(calendar);
+        loadScheduling();
 //        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 //        imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
     }
 
     @Override
     public void onClickItem(Hour hour) {
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if(currentUser == null || currentUser.isAnonymous()){
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivityForResult(intent, RC_SIGN_IN);
+            return;
+        }
+
         Snackbar.make(mRecyclerView, getString(R.string.chosen_time, hour.getFormattedHour()),
                 Snackbar.LENGTH_SHORT).show();
 
@@ -187,12 +227,12 @@ public class SchedulingActivity extends AppCompatActivity implements OnDateChang
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         final String dateWithHour = dateFormat.format(calendar.getTime());
-        dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        final String dateFormatted = dateFormat.format(calendar.getTime());
 
         //Log.e(TAG, "onCancelled", databaseError.toException());
 
-        mDatabase.child("professionalSchedule").orderByChild("idUserDay").equalTo("10" + "_" + dateFormatted)
+        mDatabase.child("professionalSchedule").orderByChild("idUserProfessionalDay").
+                equalTo(geIdWithFormattedDateWithoutHours(calendar, currentUser.getUid(),
+                        String.valueOf(mProfessional.getId())))
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -204,11 +244,17 @@ public class SchedulingActivity extends AppCompatActivity implements OnDateChang
                         scheduling.setDate(dateWithHour);
                         scheduling.setIdCompany(mProfessional.getIdCompany());
                         scheduling.setIdProfessional(mProfessional.getId());
-                        scheduling.setName("Alexandre");
-                        scheduling.setUid(10);
+                        scheduling.setName(currentUser.getDisplayName());
+                        scheduling.setUid(currentUser.getUid());
+                        scheduling.setUserEmail(currentUser.getEmail());
+                        scheduling.setUserPhone(currentUser.getPhoneNumber());
 
-                        scheduling.setIdCompany_day(mProfessional.getIdCompany() + "_" + dateFormatted);//"10_04-09-2017"
-                        scheduling.setIdUserDay("10" + "_" + dateFormatted);
+                        scheduling.setIdCompany_day(
+                                geIdWithFormattedDateWithoutHours(calendar, String.valueOf(mProfessional.getIdCompany())));//"10_04-09-2017"
+                        scheduling.setIdUserProfessionalDay(
+                                geIdWithFormattedDateWithoutHours(calendar, currentUser.getUid(), String.valueOf(mProfessional.getId())));
+                        scheduling.setIdProfessionalDay(
+                                geIdWithFormattedDateWithoutHours(calendar, String.valueOf(mProfessional.getId())));
 
                         String key = mDatabase.child("professionalSchedule").push().getKey();
                         mDatabase.child("professionalSchedule").child(key).setValue(scheduling);

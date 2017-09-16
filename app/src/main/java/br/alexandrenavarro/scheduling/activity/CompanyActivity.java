@@ -1,4 +1,4 @@
-package br.alexandrenavarro.scheduling;
+package br.alexandrenavarro.scheduling.activity;
 
 import android.arch.lifecycle.LifecycleRegistry;
 import android.arch.lifecycle.LifecycleRegistryOwner;
@@ -25,8 +25,12 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
+import br.alexandrenavarro.scheduling.R;
 import br.alexandrenavarro.scheduling.holder.ProfessionalHolder;
 import br.alexandrenavarro.scheduling.model.Company;
 import br.alexandrenavarro.scheduling.model.Professional;
@@ -34,6 +38,9 @@ import br.alexandrenavarro.scheduling.model.Scheduling;
 import br.alexandrenavarro.scheduling.util.DateUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static br.alexandrenavarro.scheduling.util.FormatIdUtil.geIdWithFormattedDateWithoutHours;
+
 
 /**
  * Created by alexandrenavarro on 24/08/17.
@@ -56,7 +63,7 @@ public class CompanyActivity extends AppCompatActivity implements LifecycleRegis
     private FirebaseRecyclerAdapter<Professional, ProfessionalHolder> mAdapter;
 
     private Company mCompany;
-    private Map<Long, String> map = new HashMap<>();
+    private Map<Long, Set<Integer>> map = new HashMap<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,7 +77,6 @@ public class CompanyActivity extends AppCompatActivity implements LifecycleRegis
                     child("professional").child(String.valueOf(mCompany.getId()));
             mSchedulingRef = FirebaseDatabase.getInstance().getReference().
                     child("professionalSchedule");
-//            loadDataBase();
         }
 
         bind();
@@ -152,15 +158,12 @@ public class CompanyActivity extends AppCompatActivity implements LifecycleRegis
     }
 
     private void loadScheduling(){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        SimpleDateFormat dateFormatRequest = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-        Date date = DateUtil.getNextBusinessDay().getTime();
-
-        String dateFormatted = dateFormat.format(date);
-        mSchedulingRef.orderByChild("idCompany_day").equalTo(mCompany.getId()+ "_" +dateFormatted).
+        mSchedulingRef.orderByChild("idCompany_day").
+                equalTo(geIdWithFormattedDateWithoutHours(DateUtil.getNextBusinessDay(), String.valueOf(mCompany.getId()))).
                 addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        SimpleDateFormat dateFormatRequest = new SimpleDateFormat("dd-MM-yyyy HH:mm");
                         map.clear();
                         for (DataSnapshot schedulingSnapshot: dataSnapshot.getChildren()){
                             Scheduling scheduling = schedulingSnapshot.getValue(Scheduling.class);
@@ -172,17 +175,14 @@ public class CompanyActivity extends AppCompatActivity implements LifecycleRegis
                             }
 
                             if(date != null){
-                                Calendar calendar = DateUtil.getNextBusinessDay();
+                                Calendar calendar = Calendar.getInstance();
                                 calendar.setTime(date);
-                                String formattedDate = "";
 
-                                if(map.containsKey(scheduling.getIdProfessional())){
-                                    formattedDate = map.get(scheduling.getIdProfessional()) + " | ";
+                                if(!map.containsKey(scheduling.getIdProfessional())){
+                                    map.put(scheduling.getIdProfessional(), new TreeSet<>());
                                 }
 
-                                formattedDate += calendar.get(Calendar.HOUR_OF_DAY) + ":00";
-
-                                map.put(scheduling.getIdProfessional(), formattedDate);
+                                map.get(scheduling.getIdProfessional()).add(calendar.get(Calendar.HOUR_OF_DAY));
 
                             }
                         }

@@ -13,16 +13,18 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".CompanyActivity"/>
+        <activity android:name=".activity.CompanyActivity"/>
 
-        <activity android:name=".SchedulingActivity"/>
+        <activity android:name=".activity.SchedulingActivity"/>
+
+        <activity android:name=".activity.LoginActivity"/>
 
     </application>
 </manifest>

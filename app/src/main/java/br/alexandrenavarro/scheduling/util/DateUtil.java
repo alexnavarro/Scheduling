@@ -13,7 +13,8 @@ public class DateUtil {
 
         if(calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY){
             calendar.add(Calendar.DAY_OF_WEEK, 2);
-        }else if(calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY){
+        }else if(calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY ||
+                calendar.get(Calendar.HOUR_OF_DAY) > 18){
             calendar.add(Calendar.DAY_OF_WEEK, 1);
         }
 

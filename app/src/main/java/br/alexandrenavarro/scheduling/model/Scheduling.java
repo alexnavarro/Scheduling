@@ -8,11 +8,14 @@ public class Scheduling {
 
     private String date;
     private long idCompany;
-    private long uid;
+    private String uid;
     private String idCompany_day;
     private String name;
     private long idProfessional;
-    private String idUserDay;
+    private String idUserProfessionalDay;
+    private String idProfessionalDay;
+    private String userPhone;
+    private String userEmail;
 
     public String getDate() {
         return date;
@@ -30,11 +33,11 @@ public class Scheduling {
         this.idCompany = idCompany;
     }
 
-    public long getUid() {
+    public String getUid() {
         return uid;
     }
 
-    public void setUid(long uid) {
+    public void setUid(String uid) {
         this.uid = uid;
     }
 
@@ -62,11 +65,35 @@ public class Scheduling {
         this.idProfessional = idProfessional;
     }
 
-    public void setIdUserDay(String idUserDay) {
-        this.idUserDay = idUserDay;
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
-    public String getIdUserDay() {
-        return idUserDay;
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public String getUserPhone() {
+        return userPhone;
+    }
+
+    public void setUserPhone(String userPhone) {
+        this.userPhone = userPhone;
+    }
+
+    public String getIdUserProfessionalDay() {
+        return idUserProfessionalDay;
+    }
+
+    public void setIdUserProfessionalDay(String idUserProfessionalDay) {
+        this.idUserProfessionalDay = idUserProfessionalDay;
+    }
+
+    public String getIdProfessionalDay() {
+        return idProfessionalDay;
+    }
+
+    public void setIdProfessionalDay(String idProfessionalDay) {
+        this.idProfessionalDay = idProfessionalDay;
     }
 }

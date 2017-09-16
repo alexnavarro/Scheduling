@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import br.alexandrenavarro.scheduling.CompanyActivity;
+import br.alexandrenavarro.scheduling.activity.CompanyActivity;
 import br.alexandrenavarro.scheduling.R;
 import br.alexandrenavarro.scheduling.model.Company;
 
