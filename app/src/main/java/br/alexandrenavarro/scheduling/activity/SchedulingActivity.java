@@ -130,7 +130,7 @@ public class SchedulingActivity extends AppCompatActivity implements OnDateChang
         mRecyclerView.setLayoutManager(mManager);
         mAdapter = new SchedulingAdapter(availableHours, this);
         mRecyclerView.setAdapter(mAdapter);
-        loadScheduling();
+        loadScheduling( DateUtil.getNextBusinessDay());
 
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
@@ -139,8 +139,7 @@ public class SchedulingActivity extends AppCompatActivity implements OnDateChang
         }
     }
 
-    private void loadScheduling() {
-        Calendar calendar = DateUtil.getNextBusinessDay();
+    private void loadScheduling(Calendar calendar) {
         SimpleDateFormat dateFormatRequest = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         mDatabase.child("professionalSchedule").orderByChild("idProfessionalDay").
                 equalTo(geIdWithFormattedDateWithoutHours(calendar,
@@ -199,10 +198,7 @@ public class SchedulingActivity extends AppCompatActivity implements OnDateChang
         calendar.set(Calendar.DAY_OF_MONTH, day);
         calendar.set(Calendar.YEAR, year);
 
-        availableHours = WorkHoursUtils.generate(calendar);
-        loadScheduling();
-//        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//        imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
+        loadScheduling(calendar);
     }
 
     @Override
