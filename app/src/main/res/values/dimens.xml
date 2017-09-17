@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Today Widget -->
+    <dimen name="widget_default_width">110dp</dimen>
+    <dimen name="widget_default_height">40dp</dimen>
+    <dimen name="widget_min_resize_width">110dp</dimen>
+    <dimen name="widget_min_resize_height">@dimen/widget_default_height</dimen>
+    <dimen name="widget_large_width">250dp</dimen>
+
+    <dimen name="widget_detail_default_width">110dp</dimen>
+    <dimen name="widget_detail_default_height">110dp</dimen>
+</resources>

@@ -1,12 +1,16 @@
 package br.alexandrenavarro.scheduling.util;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by alexandrenavarro on 03/09/17.
  */
 
 public class DateUtil {
+
+    public static final String DEFAULT_DATE_FORMAT = "dd-MM-yyyy HH:mm";
 
     public static Calendar getNextBusinessDay(){
         Calendar calendar = Calendar.getInstance();
@@ -19,5 +23,14 @@ public class DateUtil {
         }
 
         return calendar;
+    }
+
+    public static Date parseDate(String source){
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DEFAULT_DATE_FORMAT);
+        try {
+            return dateFormat.parse(source);
+        }catch (Exception e){}
+
+        return null;
     }
 }

@@ -38,6 +38,7 @@ import br.alexandrenavarro.scheduling.model.Professional;
 import br.alexandrenavarro.scheduling.model.Scheduling;
 import br.alexandrenavarro.scheduling.util.DateUtil;
 import br.alexandrenavarro.scheduling.util.WorkHoursUtils;
+import br.alexandrenavarro.scheduling.widget.ScheduleWidgetProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -244,6 +245,8 @@ public class SchedulingActivity extends AppCompatActivity implements OnDateChang
                         scheduling.setUid(currentUser.getUid());
                         scheduling.setUserEmail(currentUser.getEmail());
                         scheduling.setUserPhone(currentUser.getPhoneNumber());
+                        scheduling.setProfessionalName(mProfessional.getName());
+                        scheduling.setSpecialization(mProfessional.getSpecialization());
 
                         scheduling.setIdCompany_day(
                                 geIdWithFormattedDateWithoutHours(calendar, String.valueOf(mProfessional.getIdCompany())));//"10_04-09-2017"
@@ -251,6 +254,8 @@ public class SchedulingActivity extends AppCompatActivity implements OnDateChang
                                 geIdWithFormattedDateWithoutHours(calendar, currentUser.getUid(), String.valueOf(mProfessional.getId())));
                         scheduling.setIdProfessionalDay(
                                 geIdWithFormattedDateWithoutHours(calendar, String.valueOf(mProfessional.getId())));
+
+                        scheduling.setIdUserDay(geIdWithFormattedDateWithoutHours(calendar, currentUser.getUid()));
 
                         String key = mDatabase.child("professionalSchedule").push().getKey();
                         mDatabase.child("professionalSchedule").child(key).setValue(scheduling);

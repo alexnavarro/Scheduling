@@ -51,6 +51,26 @@ public class Professional implements Parcelable {
         return idCompany;
     }
 
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSpecialization(String specialization) {
+        this.specialization = specialization;
+    }
+
+    public void setIdCompany(long idCompany) {
+        this.idCompany = idCompany;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     @Override
     public int describeContents() {
         return 0;

@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import br.alexandrenavarro.scheduling.R;
 import br.alexandrenavarro.scheduling.model.User;
+import br.alexandrenavarro.scheduling.widget.ScheduleWidgetProvider;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -109,6 +110,8 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
                                 setValue(new User(user.getDisplayName(), user.getEmail(),
                                         user.getPhoneNumber(), user.getUid()));
                         setResult(RESULT_OK);
+                        Intent dataUpdatedIntent = new Intent(ScheduleWidgetProvider.ACTION_DATA_UPDATED);
+                        getApplication().sendBroadcast(dataUpdatedIntent);
                         finish();
                     } else {
                         // If sign in fails, display a message to the user.

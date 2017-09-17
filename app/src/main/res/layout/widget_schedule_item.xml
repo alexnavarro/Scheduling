@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/widget_list_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="4dp">
+
+        <TextView
+            android:id="@+id/txt_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp"
+            android:gravity="start|center_vertical"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:text="Ana Amorin" />
+
+        <TextView
+            android:id="@+id/txt_hour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:paddingEnd="3dp"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp"
+            android:paddingStart="3dp"
+            android:textSize="12sp"
+            tools:text="15:00" />
+
+        <TextView
+            android:id="@+id/txt_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10sp"
+            android:layout_marginRight="10sp"
+            android:layout_toLeftOf="@+id/txt_hour"
+            android:layout_toStartOf="@+id/txt_hour"
+            android:textSize="14sp"
+            tools:text="18/05/2017" />
+
+    </RelativeLayout>
+</FrameLayout>

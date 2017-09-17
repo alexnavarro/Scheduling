@@ -16,6 +16,9 @@ public class Scheduling {
     private String idProfessionalDay;
     private String userPhone;
     private String userEmail;
+    private String professionalName;
+    private String specialization;
+    private String idUserDay;
 
     public String getDate() {
         return date;
@@ -95,5 +98,29 @@ public class Scheduling {
 
     public void setIdProfessionalDay(String idProfessionalDay) {
         this.idProfessionalDay = idProfessionalDay;
+    }
+
+    public void setProfessionalName(String professionalName) {
+        this.professionalName = professionalName;
+    }
+
+    public String getProfessionalName() {
+        return professionalName;
+    }
+
+    public void setSpecialization(String specialization) {
+        this.specialization = specialization;
+    }
+
+    public String getSpecialization() {
+        return specialization;
+    }
+
+    public String getIdUserDay() {
+        return idUserDay;
+    }
+
+    public void setIdUserDay(String idUserDay) {
+        this.idUserDay = idUserDay;
     }
 }

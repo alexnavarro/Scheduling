@@ -24,6 +24,7 @@ import com.google.firebase.database.Query;
 import br.alexandrenavarro.scheduling.R;
 import br.alexandrenavarro.scheduling.holder.CompanyHolder;
 import br.alexandrenavarro.scheduling.model.Company;
+import br.alexandrenavarro.scheduling.widget.ScheduleWidgetProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -138,6 +139,9 @@ public class MainActivity extends BaseActivity implements LifecycleRegistryOwner
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null && !currentUser.isAnonymous()){
             mAuth.signOut();
+            updateUI(mAuth.getCurrentUser());
+            Intent dataUpdatedIntent = new Intent(ScheduleWidgetProvider.ACTION_DATA_UPDATED);
+            getApplication().sendBroadcast(dataUpdatedIntent);
         }
     }
 
@@ -147,6 +151,10 @@ public class MainActivity extends BaseActivity implements LifecycleRegistryOwner
             mTxtGreeting.setText(getString(R.string.user_logged, user.getDisplayName()));
             mBtnGoogleSignIn.setVisibility(View.GONE);
             mBtnLogout.setVisibility(View.VISIBLE);
+        }else{
+            mTxtGreeting.setText(R.string.user_greeting);
+            mBtnGoogleSignIn.setVisibility(View.VISIBLE);
+            mBtnLogout.setVisibility(View.GONE);
         }
     }
 }
