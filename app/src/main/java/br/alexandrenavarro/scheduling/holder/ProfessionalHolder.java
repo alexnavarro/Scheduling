@@ -28,10 +28,13 @@ public class ProfessionalHolder extends RecyclerView.ViewHolder{
         mSchedulingField = itemView.findViewById(R.id.txt_scheduling);
         mDayOfWeekField = itemView.findViewById(R.id.txt_today);
 
-        itemView.setOnClickListener(view -> {
-            Intent intent = new Intent(view.getContext(), SchedulingActivity.class);
-            intent.putExtra(SchedulingActivity.EXTRA_PROFESSIONAL, mProfessional);
-            view.getContext().startActivity(intent);
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), SchedulingActivity.class);
+                intent.putExtra(SchedulingActivity.EXTRA_PROFESSIONAL, mProfessional);
+                view.getContext().startActivity(intent);
+            }
         });
     }
 

@@ -140,8 +140,8 @@ public class SchedulingActivity extends AppCompatActivity implements OnDateChang
         }
     }
 
-    private void loadScheduling(Calendar calendar) {
-        SimpleDateFormat dateFormatRequest = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+    private void loadScheduling(final Calendar calendar) {
+        final SimpleDateFormat dateFormatRequest = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         mDatabase.child("professionalSchedule").orderByChild("idProfessionalDay").
                 equalTo(geIdWithFormattedDateWithoutHours(calendar,
                         String.valueOf(mProfessional.getId()))).
@@ -204,8 +204,7 @@ public class SchedulingActivity extends AppCompatActivity implements OnDateChang
 
     @Override
     public void onClickItem(Hour hour) {
-
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        final FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser == null || currentUser.isAnonymous()){
             Intent intent = new Intent(this, LoginActivity.class);
             startActivityForResult(intent, RC_SIGN_IN);
@@ -215,7 +214,7 @@ public class SchedulingActivity extends AppCompatActivity implements OnDateChang
         Snackbar.make(mRecyclerView, getString(R.string.chosen_time, hour.getFormattedHour()),
                 Snackbar.LENGTH_SHORT).show();
 
-        Calendar calendar = Calendar.getInstance();
+        final Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.MONTH, month);
         calendar.set(Calendar.DAY_OF_MONTH, day);
         calendar.set(Calendar.YEAR, year);

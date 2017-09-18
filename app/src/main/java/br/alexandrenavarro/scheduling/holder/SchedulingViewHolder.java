@@ -26,8 +26,11 @@ public class SchedulingViewHolder extends RecyclerView.ViewHolder {
         mAvailableField = itemView.findViewById(R.id.txt_available);
         this.onItemClickListener = onItemClickListener;
 
-        itemView.setOnClickListener(view -> {
-            SchedulingViewHolder.this.onItemClickListener.onClickItem(mHour);
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SchedulingViewHolder.this.onItemClickListener.onClickItem(mHour);
+            }
         });
     }
 

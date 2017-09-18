@@ -140,7 +140,7 @@ public class CompanyActivity extends AppCompatActivity implements LifecycleRegis
     }
 
     protected FirebaseRecyclerAdapter<Professional, ProfessionalHolder> getAdapter() {
-        String dayOfWeek = new SimpleDateFormat("EEEE").format(DateUtil.getNextBusinessDay().getTime());
+        final String dayOfWeek = new SimpleDateFormat("EEEE").format(DateUtil.getNextBusinessDay().getTime());
 
         return new FirebaseRecyclerAdapter<Professional, ProfessionalHolder>(Professional.class,
                 R.layout.company_details_item, ProfessionalHolder.class, mProfessionalRef,this) {
@@ -179,7 +179,7 @@ public class CompanyActivity extends AppCompatActivity implements LifecycleRegis
                                 calendar.setTime(date);
 
                                 if(!map.containsKey(scheduling.getIdProfessional())){
-                                    map.put(scheduling.getIdProfessional(), new TreeSet<>());
+                                    map.put(scheduling.getIdProfessional(), new TreeSet<Integer>());
                                 }
 
                                 map.get(scheduling.getIdProfessional()).add(calendar.get(Calendar.HOUR_OF_DAY));

@@ -26,10 +26,13 @@ public class CompanyHolder extends RecyclerView.ViewHolder{
         mAddressField = itemView.findViewById(R.id.txt_address);
         mPhoneField = itemView.findViewById(R.id.txt_txt_phone);
 
-        itemView.setOnClickListener(view -> {
-            Intent intent = new Intent(view.getContext(), CompanyActivity.class);
-            intent.putExtra(CompanyActivity.EXTRA_COMPANY, mCompany);
-            view.getContext().startActivity(intent);
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), CompanyActivity.class);
+                intent.putExtra(CompanyActivity.EXTRA_COMPANY, mCompany);
+                view.getContext().startActivity(intent);
+            }
         });
     }
 

@@ -16,7 +16,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
@@ -101,28 +104,33 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        // Sign in success, update UI with the signed-in user's information
-                        Log.d(TAG, "signInWithCredential:success");
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        mDatabase.child("user").child(user.getUid()).
-                                setValue(new User(user.getDisplayName(), user.getEmail(),
-                                        user.getPhoneNumber(), user.getUid()));
-                        setResult(RESULT_OK);
-                        Intent dataUpdatedIntent = new Intent(ScheduleWidgetProvider.ACTION_DATA_UPDATED);
-                        getApplication().sendBroadcast(dataUpdatedIntent);
-                        finish();
-                    } else {
-                        // If sign in fails, display a message to the user.
-                        Log.w(TAG, "signInWithCredential:failure", task.getException());
-                        Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                Toast.LENGTH_SHORT).show();
-                        setResult(RESULT_CANCELED);
-                        finish();
-                    }
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d(TAG, "signInWithCredential:success");
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                mDatabase.child("user").child(user.getUid()).
+                                        setValue(new User(user.getDisplayName(), user.getEmail(),
+                                                user.getPhoneNumber(), user.getUid()));
+                                setResult(RESULT_OK);
+                                Intent dataUpdatedIntent = new Intent(ScheduleWidgetProvider.ACTION_DATA_UPDATED);
+                                getApplication().sendBroadcast(dataUpdatedIntent);
+                                finish();
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w(TAG, "signInWithCredential:failure", task.getException());
+                                Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                        Toast.LENGTH_SHORT).show();
+                                setResult(RESULT_CANCELED);
+                                finish();
+                            }
 
-                    hideProgressDialog();
+                            hideProgressDialog();
+                        }
+                    }
                 });
     }
 
