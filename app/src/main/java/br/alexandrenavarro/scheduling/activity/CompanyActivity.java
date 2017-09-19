@@ -73,11 +73,12 @@ public class CompanyActivity extends AppCompatActivity implements LifecycleRegis
 
         if(savedInstanceState == null){
             mCompany = getIntent().getParcelableExtra(EXTRA_COMPANY);
-            mProfessionalRef = FirebaseDatabase.getInstance().getReference().
-                    child("professional").child(String.valueOf(mCompany.getId()));
-            mSchedulingRef = FirebaseDatabase.getInstance().getReference().
-                    child("professionalSchedule");
         }
+
+        mProfessionalRef = FirebaseDatabase.getInstance().getReference().
+                child("professional").child(String.valueOf(mCompany.getId()));
+        mSchedulingRef = FirebaseDatabase.getInstance().getReference().
+                child("professionalSchedule");
 
         bind();
 

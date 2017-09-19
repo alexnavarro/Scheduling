@@ -13,6 +13,7 @@
     <string name="user_logged">Hello %s!</string>
     <string name="loading">Loading…</string>
     <string name="title_widget_today">Today Schedule</string>
+    <string name="authentication_failed">Authentication failed.</string>
 
     <string name="empty_schedule_list">You have to login to see your schedule!</string>
 </resources>
