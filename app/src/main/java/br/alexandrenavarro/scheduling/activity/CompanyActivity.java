@@ -71,10 +71,8 @@ public class CompanyActivity extends AppCompatActivity implements LifecycleRegis
         setContentView(R.layout.company_detail_activity);
         ButterKnife.bind(this);
 
-        if(savedInstanceState == null){
-            mCompany = getIntent().getParcelableExtra(EXTRA_COMPANY);
-        }
 
+        mCompany = getIntent().getParcelableExtra(EXTRA_COMPANY);
         mProfessionalRef = FirebaseDatabase.getInstance().getReference().
                 child("professional").child(String.valueOf(mCompany.getId()));
         mSchedulingRef = FirebaseDatabase.getInstance().getReference().
