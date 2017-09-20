@@ -1,12 +1,12 @@
 package br.alexandrenavarro.scheduling.activity;
 
+import android.app.ActionBar;
+import android.arch.lifecycle.LifecycleActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -38,7 +38,6 @@ import br.alexandrenavarro.scheduling.model.Professional;
 import br.alexandrenavarro.scheduling.model.Scheduling;
 import br.alexandrenavarro.scheduling.util.DateUtil;
 import br.alexandrenavarro.scheduling.util.WorkHoursUtils;
-import br.alexandrenavarro.scheduling.widget.ScheduleWidgetProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -50,7 +49,7 @@ import static br.alexandrenavarro.scheduling.util.FormatIdUtil.geIdWithFormatted
  * Created by alexandrenavarro on 29/08/17.
  */
 
-public class SchedulingActivity extends AppCompatActivity implements OnDateChange, OnItemClickListener {
+public class SchedulingActivity extends LifecycleActivity implements OnDateChange, OnItemClickListener {
 
     public static final String EXTRA_PROFESSIONAL = "Professional";
 
@@ -133,7 +132,7 @@ public class SchedulingActivity extends AppCompatActivity implements OnDateChang
         mRecyclerView.setAdapter(mAdapter);
         loadScheduling( DateUtil.getNextBusinessDay());
 
-        ActionBar supportActionBar = getSupportActionBar();
+        ActionBar supportActionBar = getActionBar();
         if (supportActionBar != null) {
             supportActionBar.setDisplayHomeAsUpEnabled(true);
             supportActionBar.setDisplayShowHomeEnabled(true);
