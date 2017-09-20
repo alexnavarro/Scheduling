@@ -1,5 +1,6 @@
 package br.alexandrenavarro.scheduling.fragment;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
@@ -30,7 +31,7 @@ public class DatePickerFragment extends DialogFragment implements OnDateSetListe
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), this, year, month, day);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), AlertDialog.THEME_DEVICE_DEFAULT_LIGHT, this, year, month, day);
         datePickerDialog.getDatePicker().setMinDate(c.getTimeInMillis());
 
         return datePickerDialog;

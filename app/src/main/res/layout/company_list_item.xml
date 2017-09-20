@@ -17,6 +17,7 @@
         android:id="@+id/txt_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/black_54A"
         tools:text="Bela Hair" />
 
     <TextView
@@ -24,6 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/txt_name"
+        android:textColor="@color/black_54A"
         tools:text="Rua sao joaquim, 555" />
 
     <TextView
@@ -32,6 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
+        android:textColor="@color/black_54A"
         tools:text="(11) 887777-77777" />
 
 </RelativeLayout>

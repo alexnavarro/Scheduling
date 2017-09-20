@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +30,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import br.alexandrenavarro.scheduling.R;
 import br.alexandrenavarro.scheduling.model.User;
 import br.alexandrenavarro.scheduling.widget.ScheduleWidgetProvider;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -45,6 +47,8 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
     private FirebaseAuth mAuth;
     private GoogleApiClient mGoogleApiClient;
     private DatabaseReference mDatabase;
+
+    @BindView(R.id.toolbar) Toolbar mToolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -140,6 +144,7 @@ public class LoginActivity extends BaseActivity implements GoogleApiClient.OnCon
     }
 
     private void setupActionBar() {
+        setSupportActionBar(mToolbar);
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
             supportActionBar.setDisplayHomeAsUpEnabled(true);

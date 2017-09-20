@@ -20,6 +20,7 @@
         android:layout_marginRight="16dp"
         android:gravity="center"
         android:maxLines="1"
+        android:textColor="@color/black_54A"
         android:textSize="14sp"
         tools:text="Paula" />
 
@@ -36,6 +37,7 @@
         android:layout_toStartOf="@+id/txt_scheduling"
         android:gravity="end"
         android:singleLine="true"
+        android:textColor="@color/black_54A"
         android:textSize="14sp"
         android:textStyle="bold"
         tools:text="@string/today" />
@@ -50,9 +52,10 @@
         android:layout_marginRight="6dp"
         android:ellipsize="marquee"
         android:gravity="center"
-        android:textAlignment="gravity"
         android:singleLine="true"
         android:text="@string/available"
+        android:textAlignment="gravity"
+        android:textColor="@color/black_54A"
         android:textSize="12sp"
         android:textStyle="bold"
         tools:text="8am | 11 am | 2pm | 6 pm  8am 8am " />

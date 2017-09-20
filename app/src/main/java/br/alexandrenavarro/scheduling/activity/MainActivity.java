@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -48,6 +49,7 @@ public class MainActivity extends BaseActivity implements LifecycleRegistryOwner
     @BindView(R.id.sign_in_button) SignInButton mBtnGoogleSignIn;
     @BindView(R.id.logout_button) Button mBtnLogout;
     @BindView(R.id.progress_bar) ProgressBar mProgressBar;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
 
     private DatabaseReference mDatabase;
     private LinearLayoutManager mManager;
@@ -60,6 +62,7 @@ public class MainActivity extends BaseActivity implements LifecycleRegistryOwner
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
         ButterKnife.bind(this);
+        setSupportActionBar(mToolbar);
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mManager = new LinearLayoutManager(this);
         mCompanies.setLayoutManager(mManager);

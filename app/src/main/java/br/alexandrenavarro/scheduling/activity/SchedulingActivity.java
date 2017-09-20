@@ -1,31 +1,31 @@
 package br.alexandrenavarro.scheduling.activity;
 
-import android.app.ActionBar;
 import android.arch.lifecycle.LifecycleActivity;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatCallback;
+import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import br.alexandrenavarro.scheduling.OnDateChange;
@@ -35,7 +35,6 @@ import br.alexandrenavarro.scheduling.fragment.DatePickerFragment;
 import br.alexandrenavarro.scheduling.holder.OnItemClickListener;
 import br.alexandrenavarro.scheduling.model.Hour;
 import br.alexandrenavarro.scheduling.model.Professional;
-import br.alexandrenavarro.scheduling.model.Scheduling;
 import br.alexandrenavarro.scheduling.util.DateUtil;
 import br.alexandrenavarro.scheduling.util.WorkHoursUtils;
 import butterknife.BindView;
@@ -43,22 +42,22 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static br.alexandrenavarro.scheduling.activity.MainActivity.RC_SIGN_IN;
-import static br.alexandrenavarro.scheduling.util.FormatIdUtil.geIdWithFormattedDateWithoutHours;
 
 /**
  * Created by alexandrenavarro on 29/08/17.
  */
 
-public class SchedulingActivity extends LifecycleActivity implements OnDateChange, OnItemClickListener {
+public class SchedulingActivity extends LifecycleActivity implements OnDateChange, OnItemClickListener, AppCompatCallback {
 
     public static final String EXTRA_PROFESSIONAL = "Professional";
 
     @BindView(R.id.txt_description) TextView mTextDescription;
     @BindView(R.id.et_date_time) EditText mEtDateTime;
-    @BindView(R.id.recycler_view_available_time)
-    RecyclerView mRecyclerView;
+    @BindView(R.id.recycler_view_available_time) RecyclerView mRecyclerView;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
 
     private LinearLayoutManager mManager;
+    private AppCompatDelegate delegate;
 
     private Professional mProfessional;
     private List<Hour> availableHours = WorkHoursUtils.generate(Calendar.getInstance());
@@ -69,22 +68,33 @@ public class SchedulingActivity extends LifecycleActivity implements OnDateChang
 
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
+    private SchedulingActivityViewModel model;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        delegate = AppCompatDelegate.create(this, this);
+        delegate.installViewFactory();
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.scheduling_activity);
+        delegate.onCreate(savedInstanceState);
+        delegate.setContentView(R.layout.scheduling_activity);
         ButterKnife.bind(this);
-
+        delegate.setSupportActionBar(mToolbar);
+        mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-
-        if (savedInstanceState == null) {
-            mProfessional = getIntent().getParcelableExtra(EXTRA_PROFESSIONAL);
-        }
-
+        mProfessional = getIntent().getParcelableExtra(EXTRA_PROFESSIONAL);
         bind();
 
-        mAuth = FirebaseAuth.getInstance();
+        model = ViewModelProviders.of(this).get(SchedulingActivityViewModel.class);
+        model.loadScheduling(DateUtil.getNextBusinessDay(), mProfessional.getId()).
+                observe(this, new Observer<List<Hour>>() {
+            @Override
+            public void onChanged(@Nullable List<Hour> hours) {
+                availableHours.clear();
+                availableHours.addAll(hours);
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+
     }
 
     @Override
@@ -130,61 +140,12 @@ public class SchedulingActivity extends LifecycleActivity implements OnDateChang
         mRecyclerView.setLayoutManager(mManager);
         mAdapter = new SchedulingAdapter(availableHours, this);
         mRecyclerView.setAdapter(mAdapter);
-        loadScheduling( DateUtil.getNextBusinessDay());
 
-        ActionBar supportActionBar = getActionBar();
+        ActionBar supportActionBar = delegate.getSupportActionBar();
         if (supportActionBar != null) {
             supportActionBar.setDisplayHomeAsUpEnabled(true);
             supportActionBar.setDisplayShowHomeEnabled(true);
         }
-    }
-
-    private void loadScheduling(final Calendar calendar) {
-        final SimpleDateFormat dateFormatRequest = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-        mDatabase.child("professionalSchedule").orderByChild("idProfessionalDay").
-                equalTo(geIdWithFormattedDateWithoutHours(calendar,
-                        String.valueOf(mProfessional.getId()))).
-                addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (Hour hour : availableHours){
-                            hour.setAvailable(true);
-                        }
-
-                        for (DataSnapshot schedulingSnapshot : dataSnapshot.getChildren()) {
-                            Scheduling scheduling = schedulingSnapshot.getValue(Scheduling.class);
-
-                            Date date = null;
-                            try {
-                                date = dateFormatRequest.parse(scheduling.getDate());
-                            } catch (ParseException e) {
-                                Log.d(CompanyActivity.class.getSimpleName(), e.getMessage());
-                            }
-
-                            Calendar instance = Calendar.getInstance();
-                            instance.setTime(date);
-
-                            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-
-                            if(!format.format(calendar.getTime()).equals(format.format(instance.getTime()))){
-                                continue;
-                            }
-
-                            Hour hour = new Hour(instance.get(Calendar.HOUR_OF_DAY), true);
-                            if (availableHours.contains(hour)) {
-                                int index = availableHours.indexOf(hour);
-                                availableHours.get(index).setAvailable(false);
-                            }
-                        }
-
-                        mAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
     }
 
     @Override
@@ -197,8 +158,7 @@ public class SchedulingActivity extends LifecycleActivity implements OnDateChang
         calendar.set(Calendar.MONTH, month);
         calendar.set(Calendar.DAY_OF_MONTH, day);
         calendar.set(Calendar.YEAR, year);
-
-        loadScheduling(calendar);
+        model.loadingScheduling(calendar, mProfessional.getId());
     }
 
     @Override
@@ -221,49 +181,22 @@ public class SchedulingActivity extends LifecycleActivity implements OnDateChang
         calendar.set(Calendar.MINUTE, 0);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-        final String dateWithHour = dateFormat.format(calendar.getTime());
+        model.pickupHour(calendar, mProfessional, currentUser, dateFormat.format(calendar.getTime()));
+    }
 
-        //Log.e(TAG, "onCancelled", databaseError.toException());
+    @Override
+    public void onSupportActionModeStarted(ActionMode mode) {
 
-        mDatabase.child("professionalSchedule").orderByChild("idUserProfessionalDay").
-                equalTo(geIdWithFormattedDateWithoutHours(calendar, currentUser.getUid(),
-                        String.valueOf(mProfessional.getId())))
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot appleSnapshot: dataSnapshot.getChildren()) {
-                            appleSnapshot.getRef().removeValue();
-                        }
+    }
 
-                        Scheduling scheduling = new Scheduling();
-                        scheduling.setDate(dateWithHour);
-                        scheduling.setIdCompany(mProfessional.getIdCompany());
-                        scheduling.setIdProfessional(mProfessional.getId());
-                        scheduling.setName(currentUser.getDisplayName());
-                        scheduling.setUid(currentUser.getUid());
-                        scheduling.setUserEmail(currentUser.getEmail());
-                        scheduling.setUserPhone(currentUser.getPhoneNumber());
-                        scheduling.setProfessionalName(mProfessional.getName());
-                        scheduling.setSpecialization(mProfessional.getSpecialization());
+    @Override
+    public void onSupportActionModeFinished(ActionMode mode) {
 
-                        scheduling.setIdCompany_day(
-                                geIdWithFormattedDateWithoutHours(calendar, String.valueOf(mProfessional.getIdCompany())));//"10_04-09-2017"
-                        scheduling.setIdUserProfessionalDay(
-                                geIdWithFormattedDateWithoutHours(calendar, currentUser.getUid(), String.valueOf(mProfessional.getId())));
-                        scheduling.setIdProfessionalDay(
-                                geIdWithFormattedDateWithoutHours(calendar, String.valueOf(mProfessional.getId())));
+    }
 
-                        scheduling.setIdUserDay(geIdWithFormattedDateWithoutHours(calendar, currentUser.getUid()));
-
-                        String key = mDatabase.child("professionalSchedule").push().getKey();
-                        mDatabase.child("professionalSchedule").child(key).setValue(scheduling);
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.e(SchedulingActivity.class.getSimpleName(), "onCancelled", databaseError.toException());
-
-                    }
-                });
+    @Nullable
+    @Override
+    public ActionMode onWindowStartingSupportActionMode(ActionMode.Callback callback) {
+        return null;
     }
 }

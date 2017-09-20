@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -55,6 +56,7 @@ public class CompanyActivity extends AppCompatActivity implements LifecycleRegis
     @BindView(R.id.txt_phone) TextView mPhone;
     @BindView(R.id.txt_address) TextView mAddress;
     @BindView(R.id.recycler_view_professionals) RecyclerView mRecyclerView;
+    @BindView(R.id.toolbar) Toolbar mToolbar;
 
     protected DatabaseReference mProfessionalRef;
     protected DatabaseReference mSchedulingRef;
@@ -106,16 +108,17 @@ public class CompanyActivity extends AppCompatActivity implements LifecycleRegis
     }
 
     private void bind() {
-        if(mCompany != null){
-            mPhone.setText(mCompany.getPhone());
-            mAddress.setText(mCompany.getAddress());
-            setTitle(mCompany.getName());
-        }
-
+        setSupportActionBar(mToolbar);
         ActionBar supportActionBar = getSupportActionBar();
         if(supportActionBar != null){
             supportActionBar.setDisplayHomeAsUpEnabled(true);
             supportActionBar.setDisplayShowHomeEnabled(true);
+        }
+
+        if(mCompany != null){
+            mPhone.setText(mCompany.getPhone());
+            mAddress.setText(mCompany.getAddress());
+            setTitle(mCompany.getName());
         }
     }
 
