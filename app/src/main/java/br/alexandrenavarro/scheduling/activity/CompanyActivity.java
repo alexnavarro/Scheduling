@@ -68,7 +68,6 @@ public class CompanyActivity extends LifecycleActivity implements LifecycleRegis
         super.onCreate(savedInstanceState);
         delegate.onCreate(savedInstanceState);
         delegate.setContentView(R.layout.company_detail_activity);
-        super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         delegate.setSupportActionBar(mToolbar);
 

@@ -40,6 +40,7 @@ public class CompanyActivityModel extends ViewModel {
 
     public MutableLiveData<Map<Long, Set<Integer>>> loadScheduling(final long companyId) {
         if (data == null) {
+            data = new MutableLiveData<>();
             mSchedulingRef.orderByChild("idCompany_day").
                     equalTo(geIdWithFormattedDateWithoutHours(DateUtil.getNextBusinessDay(), String.valueOf(companyId))).
                     addValueEventListener(new ValueEventListener() {
