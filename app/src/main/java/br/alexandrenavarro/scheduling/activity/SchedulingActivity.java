@@ -66,7 +66,6 @@ public class SchedulingActivity extends LifecycleActivity implements OnDateChang
     private int month;
     private int day;
 
-    private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
     private SchedulingActivityViewModel model;
 
@@ -80,7 +79,6 @@ public class SchedulingActivity extends LifecycleActivity implements OnDateChang
         ButterKnife.bind(this);
         delegate.setSupportActionBar(mToolbar);
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
         mProfessional = getIntent().getParcelableExtra(EXTRA_PROFESSIONAL);
         bind();
 

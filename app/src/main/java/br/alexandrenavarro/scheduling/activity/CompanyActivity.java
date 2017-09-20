@@ -1,53 +1,46 @@
 package br.alexandrenavarro.scheduling.activity;
 
+import android.arch.lifecycle.LifecycleActivity;
 import android.arch.lifecycle.LifecycleRegistry;
 import android.arch.lifecycle.LifecycleRegistryOwner;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatCallback;
+import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import br.alexandrenavarro.scheduling.R;
 import br.alexandrenavarro.scheduling.holder.ProfessionalHolder;
 import br.alexandrenavarro.scheduling.model.Company;
 import br.alexandrenavarro.scheduling.model.Professional;
-import br.alexandrenavarro.scheduling.model.Scheduling;
 import br.alexandrenavarro.scheduling.util.DateUtil;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static br.alexandrenavarro.scheduling.util.FormatIdUtil.geIdWithFormattedDateWithoutHours;
 
 
 /**
  * Created by alexandrenavarro on 24/08/17.
  */
 
-public class CompanyActivity extends AppCompatActivity implements LifecycleRegistryOwner {
+public class CompanyActivity extends LifecycleActivity implements LifecycleRegistryOwner, AppCompatCallback {
 
     private final LifecycleRegistry mRegistry = new LifecycleRegistry(this);
 
@@ -63,16 +56,21 @@ public class CompanyActivity extends AppCompatActivity implements LifecycleRegis
     private LinearLayoutManager mManager;
     private DividerItemDecoration mDividerItemDecoration;
     private FirebaseRecyclerAdapter<Professional, ProfessionalHolder> mAdapter;
+    private AppCompatDelegate delegate;
 
     private Company mCompany;
     private Map<Long, Set<Integer>> map = new HashMap<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        delegate = AppCompatDelegate.create(this, this);
+        delegate.installViewFactory();
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.company_detail_activity);
+        delegate.onCreate(savedInstanceState);
+        delegate.setContentView(R.layout.company_detail_activity);
+        super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
-
+        delegate.setSupportActionBar(mToolbar);
 
         mCompany = getIntent().getParcelableExtra(EXTRA_COMPANY);
         mProfessionalRef = FirebaseDatabase.getInstance().getReference().
@@ -91,9 +89,16 @@ public class CompanyActivity extends AppCompatActivity implements LifecycleRegis
         mRecyclerView.addItemDecoration(mDividerItemDecoration);
 
         attachRecyclerViewAdapter();
-        loadScheduling();
 
-
+        ViewModelProviders.of(this).get(CompanyActivityModel.class).
+                loadScheduling(mCompany.getId()).observe(this, new Observer<Map<Long, Set<Integer>>>() {
+            @Override
+            public void onChanged(@Nullable Map<Long, Set<Integer>> longSetMap) {
+                map.clear();
+                map.putAll(longSetMap);
+                mAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -108,8 +113,7 @@ public class CompanyActivity extends AppCompatActivity implements LifecycleRegis
     }
 
     private void bind() {
-        setSupportActionBar(mToolbar);
-        ActionBar supportActionBar = getSupportActionBar();
+        ActionBar supportActionBar = delegate.getSupportActionBar();
         if(supportActionBar != null){
             supportActionBar.setDisplayHomeAsUpEnabled(true);
             supportActionBar.setDisplayShowHomeEnabled(true);
@@ -152,50 +156,23 @@ public class CompanyActivity extends AppCompatActivity implements LifecycleRegis
             }
 
             @Override
-            public void onDataChanged() {
-                // If there are no chat messages, show a view that invites the user to add a message.
-//                mEmptyListMessage.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
-            }
+            public void onDataChanged() {}
         };
     }
 
-    private void loadScheduling(){
-        mSchedulingRef.orderByChild("idCompany_day").
-                equalTo(geIdWithFormattedDateWithoutHours(DateUtil.getNextBusinessDay(), String.valueOf(mCompany.getId()))).
-                addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        SimpleDateFormat dateFormatRequest = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-                        map.clear();
-                        for (DataSnapshot schedulingSnapshot: dataSnapshot.getChildren()){
-                            Scheduling scheduling = schedulingSnapshot.getValue(Scheduling.class);
-                            Date date = null;
-                            try {
-                                date = dateFormatRequest.parse(scheduling.getDate());
-                            } catch (ParseException e) {
-                                Log.d(CompanyActivity.class.getSimpleName(), e.getMessage());
-                            }
+    @Override
+    public void onSupportActionModeStarted(ActionMode mode) {
 
-                            if(date != null){
-                                Calendar calendar = Calendar.getInstance();
-                                calendar.setTime(date);
+    }
 
-                                if(!map.containsKey(scheduling.getIdProfessional())){
-                                    map.put(scheduling.getIdProfessional(), new TreeSet<Integer>());
-                                }
+    @Override
+    public void onSupportActionModeFinished(ActionMode mode) {
 
-                                map.get(scheduling.getIdProfessional()).add(calendar.get(Calendar.HOUR_OF_DAY));
+    }
 
-                            }
-                        }
-
-                        mAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Log.d(CompanyActivity.class.getSimpleName(), databaseError.getMessage());
-                    }
-                });
+    @Nullable
+    @Override
+    public ActionMode onWindowStartingSupportActionMode(ActionMode.Callback callback) {
+        return null;
     }
 }
