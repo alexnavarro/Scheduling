@@ -14,3 +14,7 @@ For generate the apk using command line use this command: `./gradlew assembleDeb
 
 ## Screenshot
 <img src="/screenshots/device-2017-12-10-124952.png" width="280" height="500"> <img src="/screenshots/device-2017-12-10-124617.png" width="280" height="500"> <img src="/screenshots/device-2017-12-10-124603.png" width="280" height="500">
+
+## License
+
+[Scheduling](https://github.com/alexnavarro/Capstone-Project) is free software, and may be redistributed under the terms specified in the [LICENSE](LICENSE) file.
