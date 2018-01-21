@@ -13,4 +13,4 @@ I'm using [Firebase Realtime Data Base](https://firebase.google.com/products/dat
 For generate the apk using command line use this command: `./gradlew assembleDebug`
 
 ## Screenshot
-<img src="/screenshots/device-2017-12-10-124952.png" width="300" height="500"> <img src="/screenshots/device-2017-12-10-124617.png" width="300" height="500"> <img src="/screenshots/device-2017-12-10-124603.png" width="300" height="500">
+<img src="/screenshots/device-2017-12-10-124952.png" width="280" height="500"> <img src="/screenshots/device-2017-12-10-124617.png" width="280" height="500"> <img src="/screenshots/device-2017-12-10-124603.png" width="280" height="500">
