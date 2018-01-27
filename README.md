@@ -12,7 +12,7 @@ It use standard Android architecture and following libs
 
 ## Install
 
-I recommend you use [Android Studio](https://developer.android.com/studio/index.html) because the development is easier thant command line. It necessary create a directory named keys in the root and put your debug and prodcution keystore. 
+I recommend you use [Android Studio](https://developer.android.com/studio/index.html) because the development is easier thant command line. It necessary create a directory named keys in the root and put your debug and production keystore. 
 
 I'm using [Firebase Realtime Data Base](https://firebase.google.com/products/database/) and [Firebase Auth](https://firebase.google.com/docs/auth/) and you need configure it.
 
