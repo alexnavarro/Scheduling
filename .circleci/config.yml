@@ -36,6 +36,9 @@ references:
       root: *workspace
       paths:
         - app/build
+  run:
+    name: Create directory to store de keys
+    command: mkdir keys      
 
   ## Docker image configurations
   android_config: &android_config
