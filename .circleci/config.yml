@@ -40,13 +40,12 @@ references:
   ## Docker image configurations
   android_config: &android_config
     working_directory: *workspace
-    resource_class: large
     docker:
       - image: circleci/android:api-27-alpha
     environment:
       TERM: dumb
-      JAVA_OPTIONS: "-Xmx3g -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
-      GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx4048m"'
+      JAVA_OPTIONS: "-Xmx2g -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+      GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx2048m"'
       QEMU_AUDIO_DRV: none
 
 
