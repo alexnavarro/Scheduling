@@ -65,7 +65,7 @@ references:
   decode_android_debug_key: &decode_android_debug_key
     run:
       name: Decode Android debug key store
-      command: echo $ANDROID_KEY_DEBUG_STORE | base64 -di > keys/debug.keystore
+      command: echo $ANDROID_DEBUG_KEY_STORE | base64 -di > keys/debug.keystore
 
   # Google services  
   export_google_services: &export_google_services
