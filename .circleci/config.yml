@@ -84,6 +84,10 @@ jobs:
       - checkout
       - *restore_cache
       - *save_cache
+      - *export_android_debug_key
+      - *decode_android_debug_key
+      - *export_google_services
+      - *decode_google_services
       - run:
           name: Gradle build (debug)
           command: ./gradlew clean assembleDebug
