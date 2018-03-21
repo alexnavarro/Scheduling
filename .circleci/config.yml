@@ -1,0 +1,90 @@
+version: 2
+references:
+
+  ## Cache
+  cache_key: &cache_key
+    key: cache-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}-{{ checksum "build.gradle" }}-{{ checksum "zapImoveisApp/build.gradle" }}
+  restore_cache: &restore_cache
+    restore_cache:
+      <<: *cache_key
+  save_cache: &save_cache
+    save_cache:
+      <<: *cache_key
+      paths:
+        - ~/.gradle
+        - ~/.m2
+
+  ## Workspace
+  workspace: &workspace
+    ~/workspace
+  attach_debug_workspace: &attach_debug_workspace
+    attach_workspace:
+      at: *workspace
+  attach_release_workspace: &attach_release_workspace
+    attach_workspace:
+      at: *workspace
+  persist_debug_workspace: &persist_debug_workspace
+    persist_to_workspace:
+      root: *workspace
+      paths:
+        - app/build/outputs/androidTest-results
+        - app/build/outputs/apk
+        - app/build/outputs/code-coverage
+        - app/build/test-results
+  persist_release_workspace: &persist_release_workspace
+    persist_to_workspace:
+      root: *workspace
+      paths:
+        - app/build
+
+  ## Docker image configurations
+  android_config: &android_config
+    working_directory: *workspace
+    resource_class: large
+    docker:
+      - image: circleci/android:api-27-alpha
+    environment:
+      TERM: dumb
+      JAVA_OPTIONS: "-Xmx3g -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
+      GRADLE_OPTS: '-Dorg.gradle.jvmargs="-Xmx4048m"'
+      QEMU_AUDIO_DRV: none
+
+
+  # Android Key Store
+  export_android_key: &export_android_key
+    run:
+      name: Export Android key store environment variable
+      command: echo 'export ANDROID_KEY_STORE="$ANDROID_KEY_STORE"' >> $BASH_ENV
+  decode_android_key: &decode_android_key
+    run:
+      name: Decode Android key store
+      command: echo $ANDROID_KEY_STORE | base64 -di > key-store.jks
+  export_android_debug_key: &export_android_debug_key
+    run:
+      name: Export Android debug key store environment variable
+      command: echo 'export ANDROID_DEBUG_KEY_STORE="$ANDROID_DEBUG_KEY_STORE"' >> $BASH_ENV
+  decode_android_debug_key: &decode_android_debug_key
+    run:
+      name: Decode Android debug key store
+      command: echo $ANDROID_KEY_DEBUG_STORE | base64 -di > key-debug-store.jks
+
+jobs:
+  build_debug:
+    <<: *android_config
+    steps:
+      - checkout
+      - *restore_cache
+      - *save_cache
+      - run:
+          name: Gradle build (debug)
+          command: ./gradlew clean assembleDebug
+      - *persist_debug_workspace
+      - store_artifacts:
+          path: app/build/outputs/apk/
+          destination: /apk/
+
+workflows:
+  version: 2
+  workflow:
+    jobs:
+      - build_debug
