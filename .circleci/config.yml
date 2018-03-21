@@ -35,10 +35,7 @@ references:
     persist_to_workspace:
       root: *workspace
       paths:
-        - app/build
-  run:
-    name: Create directory to store de keys
-    command: mkdir keys      
+        - app/build     
 
   ## Docker image configurations
   android_config: &android_config
@@ -85,6 +82,7 @@ jobs:
     <<: *android_config
     steps:
       - checkout
+      - run: mkdir keys
       - *restore_cache
       - *save_cache
       - *export_android_debug_key
