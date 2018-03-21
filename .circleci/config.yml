@@ -57,7 +57,7 @@ references:
   decode_android_key: &decode_android_key
     run:
       name: Decode Android key store
-      command: echo $ANDROID_KEY_STORE | base64 -di > key-store.jks
+      command: echo $ANDROID_KEY_STORE | base64 -di > keys/scheduling.jks
   export_android_debug_key: &export_android_debug_key
     run:
       name: Export Android debug key store environment variable
@@ -65,7 +65,17 @@ references:
   decode_android_debug_key: &decode_android_debug_key
     run:
       name: Decode Android debug key store
-      command: echo $ANDROID_KEY_DEBUG_STORE | base64 -di > key-debug-store.jks
+      command: echo $ANDROID_KEY_DEBUG_STORE | base64 -di > keys/debug-store.jks
+
+  # Google services  
+  export_google_services: &export_google_services
+    run:
+      name: Export Google services environment variable
+      command: echo 'export GOOGLE_SERVICES="$GOOGLE_SERVICES"' >> $BASH_ENV
+  decode_google_services: &decode_google_services
+    run:
+      name: Decode Google services
+      command: echo $GOOGLE_SERVICES | base64 -di > app/google-services.json     
 
 jobs:
   build_debug:
