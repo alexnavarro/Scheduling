@@ -1,9 +1,7 @@
 pipeline {
+  agent any
 
   stages {
-
-    agent any
-
     stage('Lint & Unit Test') {
       parallel {
         stage('checkStyle') {
