@@ -1,6 +1,10 @@
 pipeline {
 
   stages {
+    agent {
+      node { label 'android' }
+    }
+
     stage('Lint & Unit Test') {
       parallel {
         stage('checkStyle') {
