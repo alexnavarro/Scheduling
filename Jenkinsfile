@@ -1,6 +1,7 @@
 pipeline {
 
   stages {
+
     agent any
 
     stage('Lint & Unit Test') {
